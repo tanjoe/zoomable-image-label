@@ -14,19 +14,22 @@
    <string>QTImageDisplay</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QClickLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>601</width>
-      <height>791</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QPushButton" name="enableRoi">
+      <property name="text">
+       <string>enabel roi selection</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" rowspan="2">
+     <widget class="RoiImageLabel" name="roiImageLabel">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -41,7 +44,7 @@
     <property name="title">
      <string>file</string>
     </property>
-    <addaction name="actionOpen_iamge_file"/>
+    <addaction name="actionOpenFile"/>
     <addaction name="actionExit"/>
    </widget>
    <addaction name="menuFile"/>
@@ -55,7 +58,7 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionOpen_iamge_file">
+  <action name="actionOpenFile">
    <property name="text">
     <string>open image file</string>
    </property>
@@ -69,13 +72,16 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QClickLabel</class>
+   <class>RoiImageLabel</class>
    <extends>QLabel</extends>
-   <header>QClickLabel.hpp</header>
+   <header>ui/widget/RoiImageLabel.h</header>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="qtimagedisplay.qrc"/>
+  <include location="../../../resources/qtimagedisplay.qrc"/>
  </resources>
  <connections/>
+ <slots>
+  <slot>slot_enalbe_roi()</slot>
+ </slots>
 </ui>

@@ -1,23 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;cxx;c;def</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h</Extensions>
-    </Filter>
-    <Filter Include="Form Files">
-      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
-      <Extensions>ui</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
-      <Extensions>qrc;*</Extensions>
-      <ParseFiles>false</ParseFiles>
-    </Filter>
     <Filter Include="Generated Files">
       <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
       <Extensions>moc;h;cpp</Extensions>
@@ -33,50 +16,67 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+    </Filter>
+    <Filter Include="src\ui">
+      <UniqueIdentifier>{4d5dcfbe-ca51-49a8-86ec-60cfd35f4f9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\main">
+      <UniqueIdentifier>{c77128c8-a338-4f27-afc0-ff6a4d350d28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui\forms">
+      <UniqueIdentifier>{76df1b2c-7e95-454c-b2a8-75224260245f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui\mainwindow">
+      <UniqueIdentifier>{ec0c48ef-501b-44ce-9e8b-75aa9e9821d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui\widget">
+      <UniqueIdentifier>{14ec7eb7-a7ee-4e0c-b9bd-e7395faee8bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="qtimagedisplay.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qtimagedisplay.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_RoiImageLabel.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qtimagedisplay.cpp">
-      <Filter>Generated Files\Release</Filter>
+    <ClCompile Include="src\ui\widget\RoiImageLabel.cpp">
+      <Filter>src\ui\widget</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_qtimagedisplay.cpp">
-      <Filter>Generated Files</Filter>
+    <ClCompile Include="src\ui\widget\ZoomImageLabel.cpp">
+      <Filter>src\ui\widget</Filter>
     </ClCompile>
-    <ClCompile Include="qclicklabel.cpp">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="src\ui\mainwindow\MainWindow.cpp">
+      <Filter>src\ui\mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qclicklabel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qclicklabel.cpp">
-      <Filter>Generated Files\Release</Filter>
+    <ClCompile Include="src\main\main.cpp">
+      <Filter>src\main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="qtimagedisplay.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="qtimagedisplay.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="qtimagedisplay.qrc">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="qclicklabel.hpp">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
+    <QtUic Include="src\ui\forms\qtimagedisplay.ui">
+      <Filter>src\ui\forms</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GeneratedFiles\ui_qtimagedisplay.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
+    <QtRcc Include="resources\qtimagedisplay.qrc">
+      <Filter>resources</Filter>
+    </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="src\ui\widget\RoiImageLabel.h">
+      <Filter>src\ui\widget</Filter>
+    </QtMoc>
+    <QtMoc Include="src\ui\widget\ZoomImageLabel.h">
+      <Filter>src\ui\widget</Filter>
+    </QtMoc>
+    <QtMoc Include="src\ui\mainwindow\MainWindow.h">
+      <Filter>src\ui\mainwindow</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>
