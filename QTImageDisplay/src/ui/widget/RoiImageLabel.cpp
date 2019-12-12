@@ -3,9 +3,9 @@
  * @brief     A subclass of ZoomImageLabel, in addition to picture zooming in and out,
 supports ROI selection.
               ZoomImageLabel的子类，除了缩放图片，还支持ROI的框选功能
- * @version   1.0.0
+ * @version   1.0.1
  * @author    Qiao Tan
- * @date      2019/11/18
+ * @date      2019/11/19
  *********************************************************************************/
 #include "RoiImageLabel.h"
 
@@ -20,6 +20,10 @@ supports ROI selection.
 RoiImageLabel::RoiImageLabel(QWidget *parent)
     : ZoomImageLabel(parent)
 {
+    enable_roi_act_.setText(tr("enable roi select"));
+    enable_roi_act_.setCheckable(true);
+    enable_roi_act_.setIconVisibleInMenu(false);
+    connect(&enable_roi_act_, &QAction::toggled, this, &RoiImageLabel::enableRoiSelection);
 }
 
 /******************************************************************
@@ -201,6 +205,30 @@ void RoiImageLabel::paintEvent(QPaintEvent *event)
 }
 
 /******************************************************************
+ * @brief     菜单事件，提供开启/关闭ROI选择的选项
+ * @details
+ * @param     event
+ * @return    void
+ * @author    Qiao Tan
+ * @date      2019/11/19
+
+ * @brief     menu event in which offer the option to enable/disable 
+ROI selection
+ * @details
+ * @param     event
+ * @return    void
+ * @author    Qiao Tan
+ * @date      2019/11/19
+ ******************************************************************/
+void RoiImageLabel::contextMenuEvent(QContextMenuEvent* event)
+{
+    QMenu* menu = new QMenu();
+    menu->addAction(&enable_roi_act_);
+    menu->exec(event->globalPos());
+    delete menu;
+}
+
+/******************************************************************
  * @brief     计算勾选区域对应的ROI，并将之作为信号的参数发送出去
  * @details   计算得到的ROI对应原图上的像素
  * @return    void
@@ -226,9 +254,6 @@ void RoiImageLabel::calculateRoi()
         QPointF roi_end = selected_rect_.bottomRight();
         this->widgetToImage(roi_start);
         this->widgetToImage(roi_end);
-        #ifdef _DEBUG 
-            qDebug() << "The selected ROI is" << roi_start << "to" << roi_end;
-        #endif
         selected_rect_ = QRectF(roi_start, roi_end);
         emit signalRefreshROI(selected_rect_);
     }
