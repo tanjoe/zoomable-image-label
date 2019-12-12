@@ -15,17 +15,16 @@ supports ROI selection.
  * @date      2019/11/19
  *********************************************************************************/
 #pragma once
-#include <QPainter>
-#include <QMenu>
-#include "ZoomImageLabel.h"
+#include <QAction>
+#include "ZoomImageWidget.h"
 
-class RoiImageLabel : public ZoomImageLabel
+class RoiImageWidget : public ZoomImageWidget
 {
     Q_OBJECT
 
 public:
-    RoiImageLabel(QWidget *parent);
-    virtual ~RoiImageLabel();
+    RoiImageWidget(QWidget *parent);
+    virtual ~RoiImageWidget();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;

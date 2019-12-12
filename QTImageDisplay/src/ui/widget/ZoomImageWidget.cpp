@@ -2,11 +2,14 @@
  * @class     ::ZoomImageLabel
  * @brief     A subclass of QLabel that supports to zoom in and out under the mouse position
               QLabel的子类，支持以鼠标位置为中心缩放图片
- * @version   1.0.1
+ * @version   1.1.0
  * @author    Qiao Tan
- * @date      2019/11/19
+ * @date      2019/12/12
  *********************************************************************************/
-#include "ZoomImageLabel.h"
+#include <QPainter>
+#include <QtGlobal>
+#include <QDebug>
+#include "ZoomImageWidget.h"
 
 /******************************************************************
  * @brief     
@@ -16,7 +19,7 @@
  * @author    Qiao Tan
  * @date      2019/11/15
  ******************************************************************/
-ZoomImageLabel::ZoomImageLabel(QWidget * parent /*= Q_NULLPTR*/) : QLabel(parent)
+ZoomImageWidget::ZoomImageWidget(QWidget * parent /*= Q_NULLPTR*/) : QWidget(parent)
 {
 }
 
@@ -27,7 +30,7 @@ ZoomImageLabel::ZoomImageLabel(QWidget * parent /*= Q_NULLPTR*/) : QLabel(parent
  * @author    Qiao Tan
  * @date      2019/11/15
  ******************************************************************/
-ZoomImageLabel::~ZoomImageLabel() 
+ZoomImageWidget::~ZoomImageWidget() 
 {
 }
 
@@ -46,11 +49,11 @@ ZoomImageLabel::~ZoomImageLabel()
  * @author    Qiao Tan
  * @date      2019/11/15
  ******************************************************************/
-void ZoomImageLabel::setImage(const QImage& image)
+void ZoomImageWidget::setImage(const QImage& image)
 {
     origin_image_ = image;
     is_image_setted_ = true;
-    this->showImage();
+    this->repaint();
 }
 
 /******************************************************************
@@ -68,14 +71,14 @@ void ZoomImageLabel::setImage(const QImage& image)
  * @author    Qiao Tan
  * @date      2019/11/15
  ******************************************************************/
-void ZoomImageLabel::mousePressEvent(QMouseEvent *event) 
+void ZoomImageWidget::mousePressEvent(QMouseEvent *event) 
 {
     if (event->button() == Qt::LeftButton)
     {
         is_mouse_pressed_ = true;
         last_mouse_loc_ = event->localPos();
     }
-    QLabel::mousePressEvent(event);
+    QWidget::mousePressEvent(event);
 }
 
 /******************************************************************
@@ -93,15 +96,15 @@ void ZoomImageLabel::mousePressEvent(QMouseEvent *event)
  * @author    Qiao Tan
  * @date      2019/11/15
  ******************************************************************/
-void ZoomImageLabel::mouseMoveEvent(QMouseEvent *event) 
+void ZoomImageWidget::mouseMoveEvent(QMouseEvent *event) 
 {
     if (is_mouse_pressed_)
     {
         current_mouse_loc_ = event->localPos();
         this->changeStartPoint(last_mouse_loc_ - current_mouse_loc_);
-        this->showImage();
+        this->repaint();
     }
-    QLabel::mouseMoveEvent(event);
+    QWidget::mouseMoveEvent(event);
 }
 
 /******************************************************************
@@ -119,13 +122,13 @@ void ZoomImageLabel::mouseMoveEvent(QMouseEvent *event)
  * @author    Qiao Tan
  * @date      2019/11/15
  ******************************************************************/
-void ZoomImageLabel::mouseReleaseEvent(QMouseEvent *event)
+void ZoomImageWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
         is_mouse_pressed_ = false;
     }
-    QLabel::mouseReleaseEvent(event);
+    QWidget::mouseReleaseEvent(event);
 }
 
 /******************************************************************
@@ -145,7 +148,7 @@ the mouse position is exactly the zoom center
  * @author    Qiao Tan
  * @date      2019/11/15
  ******************************************************************/
-void ZoomImageLabel::wheelEvent(QWheelEvent *event) 
+void ZoomImageWidget::wheelEvent(QWheelEvent *event) 
 {
     if (is_image_setted_)
     {
@@ -154,12 +157,13 @@ void ZoomImageLabel::wheelEvent(QWheelEvent *event)
         {
             return;
         }
+        qDebug() << "event->posF() =" << event->posF();
         QPointF displacement = (event->posF() + display_start_point_) * (wheel_degree / zoom_ratio_);
         display_start_point_ += displacement;
         zoom_ratio_ += wheel_degree;
-        this->showImage();
+        this->repaint();
     }
-    QLabel::wheelEvent(event);
+    QWidget::wheelEvent(event);
 }
 
 /******************************************************************
@@ -179,10 +183,34 @@ so that the image resolution could match the widget size
  * @author    Qiao Tan
  * @date      2019/11/19
  ******************************************************************/
-void ZoomImageLabel::resizeEvent(QResizeEvent* event)
+void ZoomImageWidget::resizeEvent(QResizeEvent* event)
 {
-    this->showImage();
-    QLabel::resizeEvent(event);
+    this->repaint();
+    QWidget::resizeEvent(event);
+}
+
+/******************************************************************
+ * @brief     
+ * @details   
+ * @param     event
+ * @return    void
+ * @author    Qiao Tan
+ * @date      2019/12/12
+ ******************************************************************/
+void ZoomImageWidget::paintEvent(QPaintEvent* event)
+{
+    if (!this->is_image_setted_)
+    {
+        return;
+    }
+    int label_width = this->width();
+    int label_height = this->height();
+    this->adjustStartPoint(label_width, label_height);
+    QPointF display_ratio(origin_image_.width() / (this->width() * zoom_ratio_), origin_image_.height() / (this->height() * zoom_ratio_));
+    QRect display_area(display_start_point_.x() * display_ratio.x(), display_start_point_.y() * display_ratio.y(), 
+        this->width() * display_ratio.x(), this->height() * display_ratio.y());
+    QPainter painter(this);
+    painter.drawImage(this->rect(), origin_image_, display_area);
 }
 
 /******************************************************************
@@ -200,7 +228,7 @@ void ZoomImageLabel::resizeEvent(QResizeEvent* event)
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-void ZoomImageLabel::changeStartPoint(const QPointF displacement)
+void ZoomImageWidget::changeStartPoint(const QPointF displacement)
 {
     if (displacement.manhattanLength() < 5)
     {
@@ -228,38 +256,10 @@ void ZoomImageLabel::changeStartPoint(const QPointF displacement)
  * @author    Qiao Tan
  * @date      2019/11/15
  ******************************************************************/
-void ZoomImageLabel::adjustStartPoint(int label_width, int label_height)
+void ZoomImageWidget::adjustStartPoint(int label_width, int label_height)
 {
     display_start_point_.rx() = qMax(0.0, display_start_point_.x());
     display_start_point_.rx() = qMin(display_start_point_.x(), qreal(zoom_ratio_ * label_width - label_width));
     display_start_point_.ry() = qMax(0.0, display_start_point_.y());
     display_start_point_.ry() = qMin(display_start_point_.y(), qreal(zoom_ratio_ * label_height - label_height));
-}
-
-/******************************************************************
- * @brief     根据zoom_ratio_和display_start_point_计算显示区域并显示图片
- * @details
- * @return    void
- * @author    Qiao Tan
- * @date      2019/11/15
-
- * @brief     display image according to the zoom_ratio_ and display_start_point_
- * @details
- * @return    void
- * @author    Qiao Tan
- * @date      2019/11/15
- ******************************************************************/
-void ZoomImageLabel::showImage()
-{
-    if (!this->is_image_setted_)
-    {
-        return;
-    }
-    int label_width = this->width();
-    int label_height = this->height();
-    this->adjustStartPoint(label_width, label_height);
-    QSize display_size(label_width * zoom_ratio_, label_height * zoom_ratio_);
-    QRect display_area(display_start_point_.x(), display_start_point_.y(), label_width, label_height);
-    QImage display_image = origin_image_.scaled(display_size).copy(display_area);
-    this->setPixmap(QPixmap::fromImage(display_image));
 }

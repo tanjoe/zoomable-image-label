@@ -7,7 +7,9 @@ supports ROI selection.
  * @author    Qiao Tan
  * @date      2019/11/19
  *********************************************************************************/
-#include "RoiImageLabel.h"
+#include <QPainter>
+#include <QMenu>
+#include "RoiImageWidget.h"
 
 /******************************************************************
  * @brief     
@@ -17,13 +19,13 @@ supports ROI selection.
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-RoiImageLabel::RoiImageLabel(QWidget *parent)
-    : ZoomImageLabel(parent)
+RoiImageWidget::RoiImageWidget(QWidget *parent)
+    : ZoomImageWidget(parent)
 {
     enable_roi_act_.setText(tr("enable roi select"));
     enable_roi_act_.setCheckable(true);
     enable_roi_act_.setIconVisibleInMenu(false);
-    connect(&enable_roi_act_, &QAction::toggled, this, &RoiImageLabel::enableRoiSelection);
+    connect(&enable_roi_act_, &QAction::toggled, this, &RoiImageWidget::enableRoiSelection);
 }
 
 /******************************************************************
@@ -33,7 +35,7 @@ RoiImageLabel::RoiImageLabel(QWidget *parent)
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-RoiImageLabel::~RoiImageLabel()
+RoiImageWidget::~RoiImageWidget()
 {
 }
 
@@ -53,11 +55,11 @@ ROI, according to the mouse button pressed
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-void RoiImageLabel::mousePressEvent(QMouseEvent *event)
+void RoiImageWidget::mousePressEvent(QMouseEvent *event)
 {
     if (!is_selection_enabled_)
     {
-        ZoomImageLabel::mousePressEvent(event);
+        ZoomImageWidget::mousePressEvent(event);
         return;
     }
     else
@@ -94,11 +96,11 @@ void RoiImageLabel::mousePressEvent(QMouseEvent *event)
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-void RoiImageLabel::mouseMoveEvent(QMouseEvent* event)
+void RoiImageWidget::mouseMoveEvent(QMouseEvent* event)
 {
     if (!is_selection_enabled_)
     {
-        ZoomImageLabel::mouseMoveEvent(event);
+        ZoomImageWidget::mouseMoveEvent(event);
         return;
     }
     else
@@ -127,11 +129,11 @@ void RoiImageLabel::mouseMoveEvent(QMouseEvent* event)
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-void RoiImageLabel::mouseReleaseEvent(QMouseEvent *event)
+void RoiImageWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (!is_selection_enabled_)
     {
-        ZoomImageLabel::mouseReleaseEvent(event);
+        ZoomImageWidget::mouseReleaseEvent(event);
         return;
     }
     else
@@ -157,9 +159,9 @@ the rectangle that represents the selected ROI
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-void RoiImageLabel::wheelEvent(QWheelEvent *event)
+void RoiImageWidget::wheelEvent(QWheelEvent *event)
 {
-    ZoomImageLabel::wheelEvent(event);
+    ZoomImageWidget::wheelEvent(event);
     begin_point_ = selected_rect_.topLeft();
     end_point_ = selected_rect_.bottomRight();
     this->imageToWidget(begin_point_);
@@ -182,25 +184,17 @@ void RoiImageLabel::wheelEvent(QWheelEvent *event)
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-void RoiImageLabel::paintEvent(QPaintEvent *event)
+void RoiImageWidget::paintEvent(QPaintEvent *event)
 {
-    if (!is_selection_enabled_)
+    ZoomImageWidget::paintEvent(event);
+    if (is_selection_enabled_ && !is_selection_cancelled_)
     {
-        ZoomImageLabel::paintEvent(event);
-        return;
-    }
-    else
-    {
-        QLabel::paintEvent(event);
-        if (!is_selection_cancelled_)
-        {
-            QPainter painter;
-            painter.begin(this);
-            QRectF rect(begin_point_, end_point_);
-            painter.setPen(QPen(Qt::blue, 2, Qt::SolidLine, Qt::RoundCap));
-            painter.drawRect(rect);
-            painter.end();
-        }
+        QPainter painter(this);
+        painter.begin(this);
+        QRectF rect(begin_point_, end_point_);
+        painter.setPen(QPen(Qt::blue, 2, Qt::SolidLine, Qt::RoundCap));
+        painter.drawRect(rect);
+        painter.end();
     }
 }
 
@@ -220,7 +214,7 @@ ROI selection
  * @author    Qiao Tan
  * @date      2019/11/19
  ******************************************************************/
-void RoiImageLabel::contextMenuEvent(QContextMenuEvent* event)
+void RoiImageWidget::contextMenuEvent(QContextMenuEvent* event)
 {
     QMenu* menu = new QMenu();
     menu->addAction(&enable_roi_act_);
@@ -241,7 +235,7 @@ void RoiImageLabel::contextMenuEvent(QContextMenuEvent* event)
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-void RoiImageLabel::calculateRoi()
+void RoiImageWidget::calculateRoi()
 {
     if (!is_selection_enabled_)
     {
@@ -273,7 +267,7 @@ refer to the widget frame, i.e., the RoiImageLabel frame
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-void RoiImageLabel::calculateRect()
+void RoiImageWidget::calculateRect()
 {
     int width = qAbs(begin_point_.x() - end_point_.x());
     int height = qAbs(begin_point_.y() - end_point_.y());
@@ -314,7 +308,7 @@ void RoiImageLabel::calculateRect()
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-void RoiImageLabel::widgetToImage(QPointF& widget_point)
+void RoiImageWidget::widgetToImage(QPointF& widget_point)
 {
     QPointF convert_factor;
     convert_factor.rx() = origin_image_.width() / (this->width() * zoom_ratio_);
@@ -338,7 +332,7 @@ void RoiImageLabel::widgetToImage(QPointF& widget_point)
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-void RoiImageLabel::imageToWidget(QPointF& image_point)
+void RoiImageWidget::imageToWidget(QPointF& image_point)
 {
     QPointF convert_factor;
     convert_factor.rx() = origin_image_.width() / (this->width() * zoom_ratio_);
@@ -362,7 +356,7 @@ void RoiImageLabel::imageToWidget(QPointF& image_point)
  * @author    Qiao Tan
  * @date      2019/11/18
  ******************************************************************/
-void RoiImageLabel::enableRoiSelection(bool value)
+void RoiImageWidget::enableRoiSelection(bool value)
 {
     is_selection_enabled_ = value;
 }

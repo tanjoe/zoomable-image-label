@@ -16,18 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QPushButton" name="enableRoi">
-      <property name="text">
-       <string>enabel roi selection</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0" rowspan="2">
-     <widget class="RoiImageLabel" name="roiImageLabel">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
+     <widget class="RoiImageWidget" name="roiImageWidget" native="true"/>
     </item>
    </layout>
   </widget>
@@ -72,9 +61,10 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>RoiImageLabel</class>
-   <extends>QLabel</extends>
-   <header>ui/widget/RoiImageLabel.h</header>
+   <class>RoiImageWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/widget/RoiImageWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

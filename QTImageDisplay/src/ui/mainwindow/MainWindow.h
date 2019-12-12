@@ -19,5 +19,4 @@ private:
 
 private slots:
 	void slot_open_img_file();
-    void slot_enable_roi();
 };

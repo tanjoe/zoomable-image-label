@@ -21,8 +21,8 @@
   <ItemGroup>
     <ClCompile Include="src\main\main.cpp" />
     <ClCompile Include="src\ui\mainwindow\MainWindow.cpp" />
-    <ClCompile Include="src\ui\widget\RoiImageLabel.cpp" />
-    <ClCompile Include="src\ui\widget\ZoomImageLabel.cpp" />
+    <ClCompile Include="src\ui\widget\RoiImageWidget.cpp" />
+    <ClCompile Include="src\ui\widget\ZoomImageWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="src\ui\forms\qtimagedisplay.ui">
@@ -32,10 +32,10 @@
     <QtRcc Include="resources\qtimagedisplay.qrc" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\ui\widget\RoiImageLabel.h" />
+    <QtMoc Include="src\ui\widget\RoiImageWidget.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\ui\widget\ZoomImageLabel.h" />
+    <QtMoc Include="src\ui\widget\ZoomImageWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\ui\mainwindow\MainWindow.h" />
