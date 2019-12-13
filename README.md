@@ -10,7 +10,7 @@ Subclasses of QLabel that supports picture zooming in and out under cursor posit
 
 ## Demo
 
-<img src=" https://raw.githubusercontent.com/tanjoe/zoomable-image-label/master/images/demo.gif " alt="demo" style="zoom: 70%;" />
+<img src="https://github.com/tanjoe/zoomable-image-label/raw/master/images/demo.gif" alt="demo" style="zoom: 70%;" />
 
 ## 原理
 
