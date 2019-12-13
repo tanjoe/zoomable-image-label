@@ -189,7 +189,7 @@ void RoiImageWidget::paintEvent(QPaintEvent *event)
     ZoomImageWidget::paintEvent(event);
     if (is_selection_enabled_ && !is_selection_cancelled_)
     {
-        QPainter painter(this);
+        QPainter painter;
         painter.begin(this);
         QRectF rect(begin_point_, end_point_);
         painter.setPen(QPen(Qt::blue, 2, Qt::SolidLine, Qt::RoundCap));

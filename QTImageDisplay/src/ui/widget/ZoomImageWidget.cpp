@@ -2,13 +2,14 @@
  * @class     ::ZoomImageLabel
  * @brief     A subclass of QLabel that supports to zoom in and out under the mouse position
               QLabel的子类，支持以鼠标位置为中心缩放图片
- * @version   1.1.0
+ * @version   1.1.1
  * @author    Qiao Tan
- * @date      2019/12/12
+ * @date      2019/12/13
  *********************************************************************************/
 #include <QPainter>
 #include <QtGlobal>
 #include <QDebug>
+#include <QTimer>
 #include "ZoomImageWidget.h"
 
 /******************************************************************
@@ -21,6 +22,15 @@
  ******************************************************************/
 ZoomImageWidget::ZoomImageWidget(QWidget * parent /*= Q_NULLPTR*/) : QWidget(parent)
 {
+    QTimer* timer = new QTimer(this);
+    timer->setInterval(500);
+    connect(timer, &QTimer::timeout, [=] () {
+        FPS_ = paint_count_ / 0.5f;
+        IPS_ = image_count_ / 0.5F;
+        paint_count_ = 0;
+        image_count_ = 0;
+    });
+    timer->start();
 }
 
 /******************************************************************
@@ -52,8 +62,47 @@ ZoomImageWidget::~ZoomImageWidget()
 void ZoomImageWidget::setImage(const QImage& image)
 {
     origin_image_ = image;
+    ++image_count_; //统计图片设置次数，用于计算IPS
     is_image_setted_ = true;
     this->repaint();
+}
+
+/******************************************************************
+ * @brief     获取控件显示帧率
+ * @details   
+ * @return    double
+ * @author    Qiao Tan
+ * @date      2019/12/12
+
+ * @brief     get FPS of the widget
+ * @details
+ * @return    double
+ * @author    Qiao Tan
+ * @date      2019/12/12
+ ******************************************************************/
+double ZoomImageWidget::getFPS()
+{
+    return FPS_;
+}
+
+/******************************************************************
+ * @brief     获取图片源帧率
+ * @details   所谓的图片源帧率，是指单位时间内setImage()被调用了多少次，
+即图片更新的频率
+ * @return    double
+ * @author    Qiao Tan
+ * @date      2019/12/12
+
+ * @brief     get IPS of the image source
+ * @details   the so-called IPS means the times that setImage() has been
+called during a unit of time, i.e. the image updating frequency
+ * @return    double
+ * @author    Qiao Tan
+ * @date      2019/12/12
+ ******************************************************************/
+double ZoomImageWidget::getIPS()
+{
+    return IPS_;
 }
 
 /******************************************************************
@@ -157,7 +206,6 @@ void ZoomImageWidget::wheelEvent(QWheelEvent *event)
         {
             return;
         }
-        qDebug() << "event->posF() =" << event->posF();
         QPointF displacement = (event->posF() + display_start_point_) * (wheel_degree / zoom_ratio_);
         display_start_point_ += displacement;
         zoom_ratio_ += wheel_degree;
@@ -203,6 +251,7 @@ void ZoomImageWidget::paintEvent(QPaintEvent* event)
     {
         return;
     }
+    ++paint_count_; //统计paintEvent被调用次数，用于计算FPS
     int label_width = this->width();
     int label_height = this->height();
     this->adjustStartPoint(label_width, label_height);

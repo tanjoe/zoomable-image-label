@@ -40,6 +40,9 @@
   <ItemGroup>
     <QtMoc Include="src\ui\mainwindow\MainWindow.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GeneratedFiles\ui_qtimagedisplay.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B12702AD-ABFB-343A-A199-8E24837244A3}</ProjectGuid>
     <Keyword>QtVS_v301</Keyword>

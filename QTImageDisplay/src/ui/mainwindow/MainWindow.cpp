@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include <QTimer>
 
 /******************************************************************
  * @brief     
@@ -12,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
-    ui.roiImageWidget->setFixedSize(600, 850);
+    ui.roiImageWidget->setFixedSize(600, 750);
 
 	ui.roiImageWidget->setAutoFillBackground(true);
 	QPalette label_palette = ui.roiImageWidget->palette();
@@ -23,7 +24,13 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui.actionOpenFile, SIGNAL(triggered()), this, SLOT(slot_open_img_file()));
 	connect(ui.actionExit, SIGNAL(triggered()), this, SLOT(close()));
 
-    this->slot_open_img_file();
+    QTimer* timer = new QTimer(this);
+    timer->setInterval(500);
+    connect(timer, &QTimer::timeout, [=]() {
+        ui.fps->setText(QString::number(ui.roiImageWidget->getFPS()));
+        ui.ips->setText(QString::number(ui.roiImageWidget->getIPS()));
+    });
+    timer->start();
 }
 
 /******************************************************************
@@ -35,8 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
  ******************************************************************/
 void MainWindow::slot_open_img_file() {
 
-	//QString image_path = QFileDialog::getOpenFileName(this, tr("select image file"), ".//", tr("Image (*.png *.jpg *.xpm *.bmp *.svg)"));
-    QString image_path = "../images/test_image.jpg";
+	QString image_path = QFileDialog::getOpenFileName(this, tr("select image file"), ".//", tr("Image (*.png *.jpg *.xpm *.bmp *.svg)"));
 	QImage* image = new QImage();
 	if (!image_path.isEmpty()) 
     {

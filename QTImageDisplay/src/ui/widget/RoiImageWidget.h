@@ -40,7 +40,7 @@ private:
     void widgetToImage(QPointF& point); ///< 由控件坐标系转到原图坐标系
     void imageToWidget(QPointF& point); ///< 由原图坐标系转到控件坐标系
 
-public slots:
+private slots:
     void enableRoiSelection(bool value); ///< 开启/关闭ROI框选
 
 signals:
